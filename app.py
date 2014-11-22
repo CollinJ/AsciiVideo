@@ -99,6 +99,14 @@ def drawVideo(file, stdscr):
       zoom *= 1.1
     elif c == ord ('-'):
       zoom /= 1.1
+    elif c == curses.KEY_RIGHT:
+      x += dx
+    elif c == curses.KEY_LEFT:
+      x = x-dx if x-dx > 0 else 0
+    elif c == curses.KEY_DOWN:
+      y = y+dy if y+dy+h > len(frameimg) else len(frameimg)-h
+    elif c == curses.KEY_UP:
+      y = y-dy if y-dy > 0 else 0
 
   cap.release()
   cv2.destroyAllWindows()
