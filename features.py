@@ -1,10 +1,5 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.ndimage.filters import sobel
-from scipy.misc import imread, imsave
-import matplotlib.cm as cm
-import IPython
 
 def ToCharray(energy):
     height, width = np.shape(energy)
@@ -74,14 +69,3 @@ def BlockPixels(img,nx,ny):
     return (out_rgb*255).astype(np.uint8)
 
 
-if __name__ == '__main__':
-    im = imread("./alex_kirito.jpg")
-    chars = GetCharray(im, 10, 20)
-    for i in range(len(chars)):
-        s=''
-        for j in range(len(chars[i])):
-            s+=chars[i][j]
-        print s
-    rgb = BlockPixels(im, 10, 20)
-    plt.imshow(rgb, interpolation='none')
-    plt.show()
