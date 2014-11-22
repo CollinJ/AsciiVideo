@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import sobel
 from scipy.misc import imread, imsave
+from sys import argv
 import matplotlib.cm as cm
 import IPython
 
@@ -75,7 +76,7 @@ def BlockPixels(img,nx,ny):
 
 
 if __name__ == '__main__':
-    im = imread("./alex_kirito.jpg")
+    im = imread(argv[1])
     chars = GetCharray(im, 10, 20)
     for i in range(len(chars)):
         s=''
