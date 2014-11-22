@@ -15,7 +15,6 @@ filename = args[0]
 
 def main(stdscr):
   init(stdscr)
-  PlayStream(filename)
   drawVideo(filename, stdscr)
   stdscr.getch()
 
