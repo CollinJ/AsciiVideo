@@ -6,8 +6,6 @@ import cv2.cv as cv
 from time import sleep
 from optparse import OptionParser
 
-import features
-
 parser = OptionParser()
 (options, args) = parser.parse_args()
 if len(args) != 1:
