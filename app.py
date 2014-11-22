@@ -6,8 +6,6 @@ import cv2.cv as cv
 from time import sleep
 from optparse import OptionParser
 
-import features
-
 parser = OptionParser()
 (options, args) = parser.parse_args()
 if len(args) != 1:
@@ -79,7 +77,7 @@ def drawVideo(file, stdscr):
     ret, frameimg=cap.read()
     if not ret:
       break
-    #sleep(waitpermillisecond/1000.0)
+    sleep(waitpermillisecond/1000.0)
     #print " currpos of videofile",cap.get(cv.CV_CAP_PROP_POS_MSEC)
     #print " index of frame",cap.get(cv.CV_CAP_PROP_POS_FRAMES)
     frameimg = cv2.resize(frameimg,(int(pixel_width*2*zoom), int(pixel_height*zoom)))
