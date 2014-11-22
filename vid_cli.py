@@ -1,6 +1,7 @@
 from app_lib import Run
 from sys import argv
 from audio import PlayStream
+from time import time
 import livestreamer
 
 uri = argv[1]
@@ -13,6 +14,7 @@ else:
     print "No audio stream found."
 video_url = streams['best'].url
 
+start = int(time()*1000)
 if len(audio_streams) > 0:
     PlayStream(audio_url)
-Run(video_url)
+Run(video_url,start)

@@ -9,10 +9,10 @@ from audio import PlayStream
 from sys import argv
 
 
-def configure(filename):
+def configure(filename, start):
   def main(stdscr):
     init(stdscr)
-    drawVideo(filename, stdscr)
+    drawVideo(filename, stdscr, start)
     stdscr.getch()
   return main
 
@@ -30,7 +30,7 @@ def drawImage(img, stdscr):
       stdscr.addstr(y,x,str(" "), curses.color_pair(RGBtoColor(rgb)))
   stdscr.refresh()
 
-def drawVideo(file, stdscr):
+def drawVideo(file, stdscr, start):
   if file.isdigit():
     file = int(file)
   cap = cv2.VideoCapture(file)
@@ -61,7 +61,6 @@ def drawVideo(file, stdscr):
   dy = 5
 
   while(True):
-    start = int(time()*1000)
     ret, frameimg=cap.read()
     if not ret:
       break
@@ -96,15 +95,11 @@ def drawVideo(file, stdscr):
       x = x - dx
     if h < max_y and y > 0:
       y = y - dy
-    sleep_time = (milliesconds_per_frame-(int(time()*1000)-start))/1000.0
-    if sleep_time > 0:
-        if sleep_time <= sleep_debt:
-            sleep_debt -= sleep_time
-        else:
-            sleep(sleep_time - sleep_debt)
-            sleep_debt = 0
-    else:
-        sleep_debt -= sleep_time
+
+    vid_time = cap.get(cv.CV_CAP_PROP_POS_MSEC)
+    real_time = int(time()*1000) - start
+    if vid_time > real_time:
+        sleep(milliesconds_per_frame/1000.0)
 
   cap.release()
   cv2.destroyAllWindows()
@@ -161,8 +156,8 @@ def debug(stdscr):
   curses.echo()
   curses.endwin()
 
-def Run(filename):
-    curses.wrapper(configure(filename))
+def Run(filename, start):
+    curses.wrapper(configure(filename, start))
 
 if __name__ == '__main__':
     Run(argv[1])
