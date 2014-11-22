@@ -60,13 +60,8 @@ def drawVideo(file, stdscr):
   dx = 10
   dy = 5
 
-  sleep_debt = 0
-
-  oldstart, start, end = None, None, None
-
   while(True):
-    oldstart, start = start, int(time()*1000)
-
+    start = int(time()*1000)
     ret, frameimg=cap.read()
     if not ret:
       break
@@ -101,18 +96,15 @@ def drawVideo(file, stdscr):
       x = x - dx
     if h < max_y and y > 0:
       y = y - dy
-
-    if end:
-        sleep_time = (milliesconds_per_frame-(end-oldstart))/1000.0
-        if sleep_time > 0:
-            if sleep_time <= sleep_debt:
-                sleep_debt -= sleep_time
-            else:
-                sleep(sleep_time - sleep_debt)
-                sleep_debt = 0
-        else:
+    sleep_time = (milliesconds_per_frame-(int(time()*1000)-start))/1000.0
+    if sleep_time > 0:
+        if sleep_time <= sleep_debt:
             sleep_debt -= sleep_time
-    end = int(time()*1000)
+        else:
+            sleep(sleep_time - sleep_debt)
+            sleep_debt = 0
+    else:
+        sleep_debt -= sleep_time
 
   cap.release()
   cv2.destroyAllWindows()

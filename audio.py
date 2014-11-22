@@ -18,11 +18,12 @@ def _play_stream(uri, stream_length):
         return False
     def die(*args):
         exit()
-    gobject.timeout_add(0, start)
-    if stream_length > 0:
-        gobject.timeout_add(1000 * (stream_length+1), die)
-    loop = glib.MainLoop()
-    loop.run()
+    while True:
+        gobject.timeout_add(0, start)
+        if stream_length > 0:
+            gobject.timeout_add(1000 * (stream_length+1), die)
+        loop = glib.MainLoop()
+        loop.run()
 
 def PlayStream(uri, stream_length = -1):
     p = Process(target=lambda:_play_stream(uri, stream_length))
