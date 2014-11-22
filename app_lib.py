@@ -57,38 +57,43 @@ def drawVideo(file, stdscr):
   zoom = .08
   x = 0
   y = 0
-  dx = 50
-  dy = 25
-
-  x *= zoom
-  y *= zoom
+  dx = 10
+  dy = 5
 
   while(True):
     ret, frameimg=cap.read()
     if not ret:
       break
     frameimg = cv2.resize(frameimg,(int(pixel_width*2*zoom), int(pixel_height*zoom)))
-    w,h,_ = np.shape(frameimg)
     
     w = width
     h = height
     max_y, max_x = stdscr.getmaxyx()
     frameimg = frameimg[y:y+h, x:x+w*2]
     drawImage(frameimg, stdscr)
+
+    h,w,_ = np.shape(frameimg)
     cv2.waitKey(1)
     c = stdscr.getch()
     if c == ord('+'):
       zoom *= 1.1
-    elif c == ord ('-'):
+    elif c == ord ('-') and w > max_x:
       zoom /= 1.1
     elif c == curses.KEY_RIGHT:
-      x += dx
+      x = x + dx if w > max_x else x-(max_x-w)
     elif c == curses.KEY_LEFT:
       x = x-dx if x-dx > 0 else 0
     elif c == curses.KEY_DOWN:
-      y = y+dy if y+dy+h > len(frameimg) else len(frameimg)-h
+      y = y+dy if h >= max_y else y
     elif c == curses.KEY_UP:
       y = y-dy if y-dy > 0 else 0
+    elif c == ord('q'):
+      debug(stdscr)
+      exit()
+    if w < max_x and x > 0:
+      x = x - dx
+    if h < max_y and y > 0:
+      y = y - dy
 
   cap.release()
   cv2.destroyAllWindows()

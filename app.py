@@ -54,12 +54,7 @@ def drawVideo(file, stdscr):
   fps= int(cap.get(cv.CV_CAP_PROP_FPS))
   if fps == 0:
     exit()
-  print "total frame",cap.get(cv.CV_CAP_PROP_FRAME_COUNT)
-  print "fps" ,fps
-  print " currpos of videofile",cap.get(cv.CV_CAP_PROP_POS_MSEC)
   waitpermillisecond=int(1*1000/fps)
-  print "waitpermillisecond",waitpermillisecond
-  print cap.get(cv.CV_CAP_PROP_FOURCC)
 
   zoom = .08
   x = 0
@@ -71,22 +66,12 @@ def drawVideo(file, stdscr):
     ret, frameimg=cap.read()
     if not ret:
       break
-    #sleep(waitpermillisecond/1000.0)
-    #print " currpos of videofile",cap.get(cv.CV_CAP_PROP_POS_MSEC)
-    #print " index of frame",cap.get(cv.CV_CAP_PROP_POS_FRAMES)
     frameimg = cv2.resize(frameimg,(int(pixel_width*2*zoom), int(pixel_height*zoom)))
     
     w = width
     h = height
     max_y, max_x = stdscr.getmaxyx()
     frameimg = frameimg[y:y+h, x:x+w*2]
-    #debug(stdscr)
-    #print "x: %s, y: %s" % (x, y)
-    #print "pixel_x: %s, pixel_y: %s" % (pixel_width, pixel_height)
-    #print "width: %s, height: %s" % (w, h)
-    #print "Max width: %s, Max Height: %s" % (max_width, max_height)
-    #print np.shape(frameimg)
-    #exit()
     drawImage(frameimg, stdscr)
 
     h,w,_ = np.shape(frameimg)
