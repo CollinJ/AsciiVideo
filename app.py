@@ -64,21 +64,17 @@ def drawVideo(file, stdscr):
   zoom = .08
   x = 0
   y = 0
-  dx = 50
-  dy = 25
-
-  x *= zoom
-  y *= zoom
+  dx = 10
+  dy = 5
 
   while(True):
     ret, frameimg=cap.read()
     if not ret:
       break
-    sleep(waitpermillisecond/1000.0)
+    #sleep(waitpermillisecond/1000.0)
     #print " currpos of videofile",cap.get(cv.CV_CAP_PROP_POS_MSEC)
     #print " index of frame",cap.get(cv.CV_CAP_PROP_POS_FRAMES)
     frameimg = cv2.resize(frameimg,(int(pixel_width*2*zoom), int(pixel_height*zoom)))
-    w,h,_ = np.shape(frameimg)
     
     w = width
     h = height
@@ -92,20 +88,29 @@ def drawVideo(file, stdscr):
     #print np.shape(frameimg)
     #exit()
     drawImage(frameimg, stdscr)
+
+    h,w,_ = np.shape(frameimg)
     cv2.waitKey(1)
     c = stdscr.getch()
     if c == ord('+'):
       zoom *= 1.1
-    elif c == ord ('-'):
+    elif c == ord ('-') and w > max_x:
       zoom /= 1.1
     elif c == curses.KEY_RIGHT:
-      x += dx
+      x = x + dx if w > max_x else x-(max_x-w)
     elif c == curses.KEY_LEFT:
       x = x-dx if x-dx > 0 else 0
     elif c == curses.KEY_DOWN:
-      y = y+dy if y+dy+h > len(frameimg) else len(frameimg)-h
+      y = y+dy if h >= max_y else y
     elif c == curses.KEY_UP:
       y = y-dy if y-dy > 0 else 0
+    elif c == ord('q'):
+      debug(stdscr)
+      exit()
+    if w < max_x and x > 0:
+      x = x - dx
+    if h < max_y and y > 0:
+      y = y - dy
 
   cap.release()
   cv2.destroyAllWindows()
