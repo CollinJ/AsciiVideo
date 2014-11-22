@@ -3,7 +3,7 @@ import curses
 import numpy as np
 import cv2
 import cv2.cv as cv
-from time import sleep
+from time import sleep, time
 from optparse import OptionParser
 from audio import PlayStream
 from sys import argv
@@ -52,7 +52,7 @@ def drawVideo(file, stdscr):
   fps= int(cap.get(cv.CV_CAP_PROP_FPS))
   if fps == 0:
     exit()
-  waitpermillisecond=int(1*1000/fps)
+  milliesconds_per_frame=int(1000.0/fps)
 
   zoom = .08
   x = 0
@@ -60,7 +60,13 @@ def drawVideo(file, stdscr):
   dx = 10
   dy = 5
 
+  sleep_debt = 0
+
+  oldstart, start, end = None, None, None
+
   while(True):
+    oldstart, start = start, int(time()*1000)
+
     ret, frameimg=cap.read()
     if not ret:
       break
@@ -79,6 +85,7 @@ def drawVideo(file, stdscr):
       zoom *= 1.1
     elif c == ord ('-') and w > max_x:
       zoom /= 1.1
+      stdscr.clear()
     elif c == curses.KEY_RIGHT:
       x = x + dx if w > max_x else x-(max_x-w)
     elif c == curses.KEY_LEFT:
@@ -94,6 +101,18 @@ def drawVideo(file, stdscr):
       x = x - dx
     if h < max_y and y > 0:
       y = y - dy
+
+    if end:
+        sleep_time = (milliesconds_per_frame-(end-oldstart))/1000.0
+        if sleep_time > 0:
+            if sleep_time <= sleep_debt:
+                sleep_debt -= sleep_time
+            else:
+                sleep(sleep_time - sleep_debt)
+                sleep_debt = 0
+        else:
+            sleep_debt -= sleep_time
+    end = int(time()*1000)
 
   cap.release()
   cv2.destroyAllWindows()
