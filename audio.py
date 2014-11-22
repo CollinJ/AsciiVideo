@@ -10,11 +10,6 @@ import glib
 from multiprocessing import Process
 from time import sleep
 
-video_url = 'https://www.youtube.com/watch?v=vuy9EpLdiqw'
-vid_data = pafy.new(video_url)
-stream_url = vid_data.getbestaudio().url
-stream_length = vid_data.length
-
 def _play_stream(uri, stream_length):
     def start(*args):
         src = gst.element_factory_make('playbin2')
@@ -35,6 +30,10 @@ def PlayStream(uri, stream_length = -1):
     return p
 
 if __name__ == '__main__':
+    video_url = 'https://www.youtube.com/watch?v=vuy9EpLdiqw'
+    vid_data = pafy.new(video_url)
+    stream_url = vid_data.getbestaudio().url
+    stream_length = vid_data.length
     PlayStream(stream_url, stream_length)
     print "sleeping"
     sleep(10)

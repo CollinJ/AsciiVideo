@@ -1,4 +1,4 @@
-#!/usr/bin/python
+import pafy
 import curses
 import numpy as np
 import cv2
@@ -6,18 +6,15 @@ import cv2.cv as cv
 from time import sleep
 from optparse import OptionParser
 from audio import PlayStream
+from sys import argv
 
-parser = OptionParser()
-(options, args) = parser.parse_args()
-if len(args) != 1:
-  parser.error("incorrect number of arguments")
-filename = args[0]
 
-def main(stdscr):
-  init(stdscr)
-  PlayStream(filename)
-  drawVideo(filename, stdscr)
-  stdscr.getch()
+def configure(filename):
+  def main(stdscr):
+    init(stdscr)
+    drawVideo(filename, stdscr)
+    stdscr.getch()
+  return main
 
 def drawImage(img, stdscr):
   maxY, maxX = stdscr.getmaxyx()
@@ -75,7 +72,7 @@ def drawVideo(file, stdscr):
     ret, frameimg=cap.read()
     if not ret:
       break
-    sleep(waitpermillisecond/1000.0)
+    #sleep(waitpermillisecond/1000.0)
     #print " currpos of videofile",cap.get(cv.CV_CAP_PROP_POS_MSEC)
     #print " index of frame",cap.get(cv.CV_CAP_PROP_POS_FRAMES)
     frameimg = cv2.resize(frameimg,(int(pixel_width*2*zoom), int(pixel_height*zoom)))
@@ -155,4 +152,8 @@ def debug(stdscr):
   curses.echo()
   curses.endwin()
 
-curses.wrapper(main)
+def Run(filename):
+    curses.wrapper(configure(filename))
+
+if __name__ == '__main__':
+    Run(argv[1])
