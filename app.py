@@ -18,11 +18,10 @@ def drawImage(img, stdscr):
   width = len(img[0])
   for y in xrange(height):
     for x in xrange(width):
-      if 2*x >= maxX or y >= maxY:
+      if x >= maxX or y >= maxY:
         continue
       rgb = img[y][x]
-      stdscr.addstr(y,2*x,str(" "), curses.color_pair(RGBto256Color(rgb)))
-      stdscr.addstr(y,2*x+1,str(" "), curses.color_pair(RGBto256Color(rgb)))
+      stdscr.addstr(y,x,str(" "), curses.color_pair(RGBto256Color(rgb)))
   stdscr.refresh()
 
 def drawVideo(file, stdscr):
