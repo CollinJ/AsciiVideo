@@ -79,7 +79,7 @@ def drawVideo(file, stdscr):
     ret, frameimg=cap.read()
     if not ret:
       break
-    #sleep(waitpermillisecond/1000.0)
+    sleep(waitpermillisecond/1000.0)
     #print " currpos of videofile",cap.get(cv.CV_CAP_PROP_POS_MSEC)
     #print " index of frame",cap.get(cv.CV_CAP_PROP_POS_FRAMES)
     frameimg = cv2.resize(frameimg,(int(pixel_width*2*zoom), int(pixel_height*zoom)))
@@ -103,6 +103,14 @@ def drawVideo(file, stdscr):
       zoom *= 1.1
     elif c == ord ('-'):
       zoom /= 1.1
+    elif c == curses.KEY_RIGHT:
+      x += dx
+    elif c == curses.KEY_LEFT:
+      x = x-dx if x-dx > 0 else 0
+    elif c == curses.KEY_DOWN:
+      y = y+dy if y+dy+h > len(frameimg) else len(frameimg)-h
+    elif c == curses.KEY_UP:
+      y = y-dy if y-dy > 0 else 0
 
   cap.release()
   cv2.destroyAllWindows()
